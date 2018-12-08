@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * @Description:
  */
 public class CurMemoryTableModel extends AbstractTableModel {
-    private String[] columnNames = {"编号", "起始地址", "长度", "状态"};
+    private String[] columnNames = {"编号", "起始地址", "长度", "占用进程名"};
     private LinkedList<Memory> memories = new LinkedList<>();
 
     public void setMemories(LinkedList<Memory> memories) {
@@ -48,7 +48,7 @@ public class CurMemoryTableModel extends AbstractTableModel {
             case 2:
                 return memory.getLength();
             case 3:
-                return memory.isState() ? "未分配" : "已分配";
+                return memory.getProcessName();
         }
         return null;
     }

@@ -1,10 +1,7 @@
 package com.main.domain;
 
 
-import javax.swing.*;
-import javax.xml.stream.FactoryConfigurationError;
 import java.util.LinkedList;
-import java.util.Random;
 
 /**
  * @ Date: 2018/12/3 15:18
@@ -12,9 +9,6 @@ import java.util.Random;
  */
 public class MemoryUnit {
     private static LinkedList<Memory> memories;
-    private static int[] arr;
-
-    // TODO length总长度的输入
     private static int totalLength = 0;
 
     public MemoryUnit() {
@@ -34,20 +28,24 @@ public class MemoryUnit {
         MemoryUnit.totalLength = totalLength;
     }
 
+    public static int getTotalLength() {
+        return totalLength;
+    }
+
     /**
      * 申请新的内存块 FF申请方式
      *
      * @param length 要申请块大小
      * @return 成功返回true, 申请失败返回false
      */
-    public static boolean applyMemoryFF(int length) {
+    public static boolean applyMemoryFF(int length, String pName) {
         if (length <= 0 || length > totalLength) {
             return false;
         }
         for (int i = 0; i < memories.size(); i++) {
             if (memories.get(i).isState() && memories.get(i).getLength() >= length) {
                 memories.add(i + 1, new Memory(memories.get(i).getStart() +
-                        memories.get(i).getLength() - length, length, false));
+                        memories.get(i).getLength() - length, length, false, pName));
                 memories.get(i).setLength(memories.get(i).getLength() - length);
                 // 判断分配后是否为空
                 if (memories.get(i).getLength() == 0) {
@@ -65,7 +63,7 @@ public class MemoryUnit {
      * @param length 要申请块大小
      * @return 成功返回true, 申请失败返回false
      */
-    public static boolean applyMemoryBF(int length) {
+    public static boolean applyMemoryBF(int length, String pName) {
         if (length <= 0 || length > totalLength) {
             return false;
         }
@@ -81,7 +79,7 @@ public class MemoryUnit {
             return false;
         if (minLen >= length) {
             memories.add(index + 1, new Memory(memories.get(index).getStart()
-                    + memories.get(index).getLength() - length, length, false));
+                    + memories.get(index).getLength() - length, length, false, pName));
             memories.get(index).setLength(memories.get(index).getLength() - length);
             // 判断分配后是否为空
             if (memories.get(index).getLength() == 0) {
@@ -98,7 +96,7 @@ public class MemoryUnit {
      * @param length 要申请块大小
      * @return 成功返回true, 申请失败返回false
      */
-    public static boolean applyMemoryWF(int length) {
+    public static boolean applyMemoryWF(int length, String pName) {
         if (length <= 0 || length > totalLength) {
             return false;
         }
@@ -115,7 +113,7 @@ public class MemoryUnit {
             return false;
         else {
             memories.add(index + 1, new Memory(memories.get(index).getStart()
-                    + memories.get(index).getLength() - length, length, false));
+                    + memories.get(index).getLength() - length, length, false, pName));
             memories.get(index).setLength(memories.get(index).getLength() - length);
             if (memories.get(index).getLength() == 0)
                 memories.remove(index);
@@ -144,67 +142,53 @@ public class MemoryUnit {
     }
 
     /**
-     * 打印分区信息
-     */
-    public static void arrayPrint() {
-        System.out.println();
-        for (int i = 0; i < memories.size(); i++) {
-            System.out.printf("%d %d %s ||", memories.get(i).getStart(), memories.get(i).getLength(),
-                    memories.get(i).isState() ? "空闲" : "占用");
-        }
-        System.out.println();
-    }
-    /**
      * 内存全部初始化
      */
     public static void clear(){
         if(memories!=null)
             memories.clear();
-        init();
     }
 
     /**
      * 返回空闲分区数量
      * @return 空闲分区数量
      */
-    public static int getUsefulNum(){
+    public static int getUsefulSize(){
         int res=0;
         for(int i=0;i<memories.size();i++){
-            if(memories.get(i).isState()
-            )
-                res++;
+            if(memories.get(i).isState() )
+                res += memories.get(i).getLength();
         }
         return res;
     }
 
-    /**
-     *
-     * @param arr1
-     */
-    public static void initNew(int[] arr1){
-        arr=arr1;
-        Random ran=new Random();
-        if(memories!=null)
-            memories.clear();
-        boolean flag=true;
-        int start=0;
-        for(int i=0;i<arr.length;i++){
-            int t=arr[i];
-            if(start+t< totalLength-1){
-                memories.add(new Memory(start,t,flag));
-            }else{
-                memories.add(new Memory(start,totalLength-start,flag));
-                start+=t;
-                break;
-
+    public static void compactMemory(int needMemory){
+        int freeMemory = 0;
+        int lastIndex = 0;
+        while (freeMemory<needMemory){
+            for (int i = memories.size()-1; i>=0; i--) {
+                if(memories.get(i).isState()){
+                    lastIndex = i;
+                    freeMemory += memories.get(lastIndex).getLength();
+                    break;
+                }
             }
-            flag=!flag;
-            start+=t;
-
-
+            for (int i = lastIndex - 1; i >=0; i--) {
+                if(memories.get(i).isState()){
+                    memories.get(lastIndex).setStart(memories.get(lastIndex).getStart() - memories.get(i).getLength());
+                    memories.get(lastIndex).setLength(memories.get(lastIndex).getLength() + memories.get(i).getLength());
+                    // 更新起始位置
+                    for(int j = i+1; j< lastIndex; ++j){
+                        memories.get(j).setStart(memories.get(j).getStart() - memories.get(i).getLength());
+                    }
+                    freeMemory += memories.get(i).getLength();
+                    memories.remove(i);
+                    break;
+                }
+            }
         }
-        if(start<totalLength-1)
-            memories.add(new Memory(start,totalLength-start,flag));
+
     }
+
 
 }

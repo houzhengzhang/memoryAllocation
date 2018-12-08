@@ -4,9 +4,11 @@ import com.main.domain.Memory;
 import com.main.domain.MemoryUnit;
 import com.main.model.CurMemoryTableModel;
 import com.main.model.FreeMemoryTableModel;
+import com.main.utils.MyCanvas;
 import com.main.view.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -27,6 +29,9 @@ public class MainFrameController {
     private JButton initMemoryBtn;
     private JTable curMemoryTable;
     private JTable freeMemoryTable;
+    private JTextField processNameJFT;
+    private JButton resetBtn;
+    private JPanel canvas;
 
     private CurMemoryTableModel curMemoryTableModel;
     private FreeMemoryTableModel freeMemoryTableModel;
@@ -37,8 +42,6 @@ public class MainFrameController {
     public MainFrameController() {
         initCompoents();
         initListeners();
-
-
     }
 
     public void showMainWindows() {
@@ -56,6 +59,9 @@ public class MainFrameController {
         initMemoryBtn = mainFrame.getInitMemoryBtn();
         curMemoryTable = mainFrame.getCurMemoryTable();
         freeMemoryTable = mainFrame.getFreeMemoryTable();
+        processNameJFT = mainFrame.getProcessNameJFT();
+        resetBtn = mainFrame.getResetBtn();
+        canvas = mainFrame.getCanvas();
 
         allocationComBox.addItem("请选择分配算法");
         allocationComBox.addItem("首次适应算法");
@@ -69,6 +75,7 @@ public class MainFrameController {
         freeMemoryTableModel = new FreeMemoryTableModel();
         freeMemoryTable.setModel(freeMemoryTableModel);
 
+        canvas.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     }
 
     private void initListeners() {
@@ -87,6 +94,8 @@ public class MainFrameController {
                     curMemoryTable.updateUI();
                     freeMemoryTableModel.setMemories(MemoryUnit.getMemories());
                     freeMemoryTable.updateUI();
+                    // 更新画板
+                    paintCanvas();
 
                     initMenoryJFT.setText("");
                 } else {
@@ -99,20 +108,21 @@ public class MainFrameController {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == 1) {
-                    // 最佳适应算法 1
-                    // 最坏适应算法 2
-                    // 首次适应算法 3
                     if (e.getItem() == "最佳适应算法") {
+                        // 最佳适应算法 1
                         currentAlgorith = 1;
                     } else if (e.getItem() == "最坏适应算法") {
+                        // 最坏适应算法 2
                         currentAlgorith = 2;
                     } else if (e.getItem() == "首次适应算法") {
+                        // 首次适应算法 3
                         currentAlgorith = 3;
                     } else currentAlgorith = -1;
                 }
             }
         });
 
+        // 申请内存
         applyBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,26 +132,36 @@ public class MainFrameController {
                     JOptionPane.showMessageDialog(null, "请填写申请内存大小！");
                     return;
                 }
-                reqMemorySizeJFT.setText("");
-                switch (currentAlgorith) {
-                    case 1:
-                        MemoryUnit.applyMemoryBF(Integer.parseInt(reqMemorySize));
-                        break;
-                    case 2:
-                        MemoryUnit.applyMemoryWF(Integer.parseInt(reqMemorySize));
-                        break;
-                    case 3:
-                        MemoryUnit.applyMemoryFF(Integer.parseInt(reqMemorySize));
-                        break;
-                    default:
-                        JOptionPane.showMessageDialog(null, "请选择内存分配算法！");
-                        break;
+                String processName = processNameJFT.getText();
+                if("".equals(processName)){
+                    JOptionPane.showMessageDialog(null, "请填写进程名！");
+                    return;
                 }
+                if(currentAlgorith == -1){
+                    JOptionPane.showMessageDialog(null, "请选择内存分配算法！");
+                    return;
+                }
+                reqMemorySizeJFT.setText("");
+                processNameJFT.setText("");
+                boolean flag = switchAlgorith(currentAlgorith, Integer.parseInt(reqMemorySize), processName);
+
+
+
+                // 分配失败 紧凑
+                if(!flag && Integer.parseInt(reqMemorySize)<=MemoryUnit.getUsefulSize()){
+                    // 紧凑
+                    MemoryUnit.compactMemory(Integer.parseInt(reqMemorySize));
+                    // 重新分配内存
+                    flag = switchAlgorith(currentAlgorith, Integer.parseInt(reqMemorySize), processName);
+                }
+                if(!flag) JOptionPane.showMessageDialog(null, "内存不足，分配失败！");
                 // 更新table
                 curMemoryTableModel.setMemories(MemoryUnit.getMemories());
                 curMemoryTable.updateUI();
                 freeMemoryTableModel.setMemories(MemoryUnit.getMemories());
                 freeMemoryTable.updateUI();
+                // 更新画板
+                paintCanvas();
             }
         });
 
@@ -162,9 +182,66 @@ public class MainFrameController {
                 curMemoryTable.updateUI();
                 freeMemoryTableModel.setMemories(MemoryUnit.getMemories());
                 freeMemoryTable.updateUI();
+
+                // 更新画板
+                paintCanvas();
             }
         });
 
+        // 重置按钮
+        resetBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reqMemorySizeJFT.setText("");
+                retMemoryBegJFT.setText("");
+                initMenoryJFT.setText("");
+                processNameJFT.setText("");
 
+                MemoryUnit.clear();
+                // 更新table
+                curMemoryTableModel.setMemories(MemoryUnit.getMemories());
+                curMemoryTable.updateUI();
+                freeMemoryTableModel.setMemories(MemoryUnit.getMemories());
+                freeMemoryTable.updateUI();
+
+                canvas.removeAll();
+                canvas.revalidate();
+            }
+
+
+        });
+    }
+    private boolean switchAlgorith(int algorithType, int reqMemorySize, String processName){
+        boolean flag = false;
+        switch (algorithType) {
+            case 1:
+                // 最佳适应算法 1
+                flag = MemoryUnit.applyMemoryBF(reqMemorySize, processName);
+                break;
+            case 2:
+                // 最坏适应算法 2
+                flag = MemoryUnit.applyMemoryWF(reqMemorySize, processName);
+                break;
+            case 3:
+                // 首次适应算法 3
+                flag = MemoryUnit.applyMemoryFF(reqMemorySize, processName);
+                break;
+        }
+        return flag;
+    }
+    private void paintCanvas() {
+        // 清空当前画布
+        canvas.removeAll();
+        for (Memory memory : MemoryUnit.getMemories()) {
+            if (memory.isState()) {
+                // 空闲
+                MyCanvas cache = new MyCanvas(Color.green, memory.getStart(), memory.getLength(), MemoryUnit.getTotalLength());
+                canvas.add(cache);
+            } else {
+                MyCanvas cache = new MyCanvas(Color.gray, memory.getStart(), memory.getLength(), MemoryUnit.getTotalLength());
+                canvas.add(cache);
+            }
+        }
+        canvas.revalidate();
     }
 }

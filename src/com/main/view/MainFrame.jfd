@@ -22,7 +22,7 @@ new FormModel {
 					"text": "空闲分区表"
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-					"x": 655
+					"x": 695
 					"y": 0
 					"width": 110
 				} )
@@ -32,9 +32,9 @@ new FormModel {
 						name: "freeMemoryTable"
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-					"x": 584
+					"x": 625
 					"y": 35
-					"height": 295
+					"height": 315
 					"width": 240
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
@@ -43,7 +43,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "allocationComBox"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 110
+						"x": 120
 						"y": 30
 						"width": 130
 					} )
@@ -51,49 +51,23 @@ new FormModel {
 						name: "label9"
 						"text": "内存分配算法："
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 10
+						"x": 20
 						"y": 35
 						"width": 104
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label10"
-						"text": "设置申请内存块大小："
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 10
-						"y": 112
-						"width": 135
-						"height": 25
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "reqMemorySizeJFT"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 140
-						"y": 112
-						"height": 25
-						"width": 84
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "applyBtn"
-						"text": "申请"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 240
-						"y": 112
-						"width": 75
-						"height": 25
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label11"
 						"text": "返还内存块起始地址："
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 10
-						"y": 149
+						"x": 15
+						"y": 215
 						"height": 25
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "retMemoryBegJFT"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 140
-						"y": 149
+						"x": 145
+						"y": 215
 						"height": 25
 						"width": 84
 					} )
@@ -101,23 +75,23 @@ new FormModel {
 						name: "returnBtn"
 						"text": "返还"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 240
-						"y": 149
-						"height": 25
-						"width": 75
+						"x": 255
+						"y": 210
+						"height": 35
+						"width": 60
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label3"
 						"text": "初始化内存大小："
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 10
+						"x": 20
 						"y": 75
 						"height": 25
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "initMenoryJFT"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 140
+						"x": 130
 						"y": 75
 						"height": 25
 						"width": 84
@@ -128,13 +102,74 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 240
 						"y": 75
-						"width": 75
-						"height": 25
+						"width": 80
+						"height": 35
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+						name: "panel2"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label10"
+							"text": "申请内存块大小"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 5
+							"y": 10
+							"width": 110
+							"height": 25
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label5"
+							"text": "进程名"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 140
+							"y": 10
+							"width": 65
+							"height": 25
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "processNameJFT"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 125
+							"y": 40
+							"width": 75
+							"height": 25
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "reqMemorySizeJFT"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 15
+							"y": 40
+							"height": 25
+							"width": 64
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "applyBtn"
+							"text": "申请"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 230
+							"y": 30
+							"width": 65
+							"height": 35
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 15
+						"y": 115
+						"height": 85
+						"width": 305
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "resetBtn"
+						"text": "重置"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 115
+						"y": 265
+						"height": 35
+						"width": 105
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-					"x": 238
+					"x": 275
 					"y": 35
-					"height": 295
+					"height": 315
 					"width": 333
 				} )
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -145,25 +180,36 @@ new FormModel {
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 					"x": 0
 					"y": 35
-					"height": 295
-					"width": 225
+					"height": 315
+					"width": 265
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label4"
 					"text": "操作面板"
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-					"x": 365
+					"x": 405
 					"y": 0
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+					name: "canvas"
+					"foreground": sfield java.awt.Color white
+					"background": sfield java.awt.Color white
+					"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 15
+					"y": 375
+					"height": 200
+					"width": 850
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 15
 				"y": 15
-				"height": 380
-				"width": 855
+				"height": 600
+				"width": 885
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 885, 430 )
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 930, 665 )
 		} )
 	}
 }
